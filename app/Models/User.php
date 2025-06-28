@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +46,34 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class);
+    }
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
+    public function vendors()
+    {
+        return $this->hasMany(Vendor::class);
+    }
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
+    }
+    public function activityParticipants()
+    {
+        return $this->hasMany(ActivityParticipant::class);
+    }
+    public function notifications()
+    {
+        return $this->belongsToMany(Notification::class);
     }
 }
