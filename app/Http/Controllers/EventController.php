@@ -94,7 +94,6 @@ class EventController extends Controller
 
         $event = Event::find($id);
         $event->update($request->only([
-            'user_id',
             'title',
             'description',
             'date_time',
