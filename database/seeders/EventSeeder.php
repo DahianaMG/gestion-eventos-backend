@@ -22,5 +22,15 @@ class EventSeeder extends Seeder
             'has_fair' => true,
             'capacity' => 105
         ]);
+
+        Event::firstOrCreate([
+            'user_id' => 3,
+            'title' => 'AnimeCon',
+            'description' => 'Convención de anime que celebra lo mejor del manga, cosplay y la cultura japonesa',
+            'date_time' => '2026/01/14',
+            'location' => 'Parque Camba Cua',
+            'has_fair' => true,
+            'capacity' => 150
+        ]);
     }
 }
