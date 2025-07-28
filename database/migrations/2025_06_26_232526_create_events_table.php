@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title', 150);
             $table->text('description');
             $table->dateTime('date_time');
-            $table->string('location, 150');
+            $table->string('location', 150);
             $table->boolean('has_fair');
             $table->unsignedInteger('capacity');
             $table->timestamps();
