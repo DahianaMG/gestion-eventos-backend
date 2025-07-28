@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
@@ -19,14 +20,14 @@ class EventController extends Controller
     public function eventsCreatedByUser(int $id)
     {
         $user = User::find($id);
-        $events = $user->createdEvents;
+        $events = $user->eventsCreated;
 
         return response()->json($events);
     }
 
     public function myEvents()
     {
-        return $this->createdEvents(auth()->id());
+        return $this->eventsCreatedByUser(auth()->id());
     }
 
     /**
@@ -43,10 +44,6 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $userId = auth()->id();
-
-        if ($event->user_id !== $userId) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
 
         $event = Event::firstOrCreate([
             'user_id' => $userId,
@@ -86,13 +83,13 @@ class EventController extends Controller
      */
     public function update(Request $request, int $id)
     {
+        $event = Event::find($id);
         $userId = auth()->id();
 
         if ($event->user_id !== $userId) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        $event = Event::find($id);
         $event->update($request->only([
             'title',
             'description',
@@ -112,13 +109,13 @@ class EventController extends Controller
      */
     public function destroy(int $id)
     {
+        $event = Event::find($id);
         $userId = auth()->id();
 
         if ($event->user_id !== $userId) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        $event = Event::find($id);
         $event->delete();
         return response()->json([
             'message' => 'The event has been deleted.'
