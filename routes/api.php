@@ -15,7 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Events
     Route::get('get-events', [EventController::class, 'index']);
-    Route::get('events-by-user/{id}', [EventController::class, 'eventsCreatedByUser']);
+    Route::get('events-by-user/{id}', [EventController::class, 'eventsCreatedByUser']); //admin
     Route::get('my-events', [EventController::class, 'myEvents']);
     Route::post('set-event', [EventController::class, 'store']);
     Route::get('get-event/{id}', [EventController::class, 'show']);
@@ -24,8 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Registrations
     Route::get('get-registrations', [RegistrationController::class, 'index']);
-    Route::get('registrations-by-user/{id}', [RegistrationController::class, 'attendingEventsByUser']);
-    Route::get('my-registrations', [RegistrationController::class, 'myAttendingEvents']);
+    Route::get('get-attending-events-by-user/{id}', [RegistrationController::class, 'attendingEventsByUser']);  //admin
+    Route::get('my-attending-events', [RegistrationController::class, 'myAttendingEvents']);
+    Route::get('get-registrations-by-event/{id}', [RegistrationController::class, 'registrationsByEvent']); //admin - organizer
     Route::post('set-registration', [RegistrationController::class, 'store']);
     Route::get('get-registration/{id}', [RegistrationController::class, 'show']);
     Route::put('update-registration/{id}', [RegistrationController::class, 'update']);

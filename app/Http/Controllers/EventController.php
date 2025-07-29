@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use App\Http\Requests\EventRequest;
 
 class EventController extends Controller
 {
@@ -41,7 +42,7 @@ class EventController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(EventRequest $request)
     {
         $userId = auth()->id();
 
@@ -51,7 +52,7 @@ class EventController extends Controller
             'description' => $request->description,
             'date_time' => $request->date_time,
             'location' => $request->location,
-            'has_fair' => $request->boolean('has_fair'),
+            'has_fair' => $request->has_fair,
             'capacity' => $request->capacity
         ]);
 
@@ -73,7 +74,7 @@ class EventController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Event $event)
+    public function edit(EventRequest $event)
     {
         //
     }
@@ -81,7 +82,7 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
+    public function update(EventRequest $request, int $id)
     {
         $event = Event::find($id);
         $userId = auth()->id();

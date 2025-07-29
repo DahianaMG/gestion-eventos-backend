@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Event;
 use App\Models\Registration;
 use Illuminate\Http\Request;
+use App\Http\Requests\RegistrationRequest;
 
 class RegistrationController extends Controller
 {
@@ -30,6 +32,16 @@ class RegistrationController extends Controller
         return $this->attendingEventsByUser(auth()->id());
     }
 
+    public function registrationsByEvent(int $eventId)
+    {
+        $event = Event::with('registrations.user')->find($eventId);
+
+        return response()->json([
+            'event' => $event->title,
+            'registrations' => $event->registrations
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -41,7 +53,7 @@ class RegistrationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RegistrationRequest $request)
     {
         $userId = auth()->id();
 
@@ -70,7 +82,7 @@ class RegistrationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Registration $registration)
+    public function edit(RegistrationRequest $registration)
     {
         //
     }
@@ -78,7 +90,7 @@ class RegistrationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
+    public function update(RegistrationRequest $request, int $id)
     {
         $registration = Registration::find($id);
         $userId = auth()->id();
@@ -92,6 +104,7 @@ class RegistrationController extends Controller
             'role_in_event',
             'status'
         ]));
+
         return response()->json([
             'message' => 'The event registration has been updated.',
             'registration' => $registration
