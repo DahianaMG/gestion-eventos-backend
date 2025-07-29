@@ -14,7 +14,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::all();
+        $events = Event::with('schedules')->get();
         return response()->json($events);
     }
 
@@ -67,7 +67,7 @@ class EventController extends Controller
      */
     public function show(int $id)
     {
-        $event = Event::find($id);
+        $event = Event::with('schedules')->find($id);
         return response()->json($event);
     }
 

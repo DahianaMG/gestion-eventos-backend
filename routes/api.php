@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\RegistrationController;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -14,7 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     //Events
-    Route::get('get-events', [EventController::class, 'index']);
+    Route::get('get-events', [EventController::class, 'index']); //public
     Route::get('events-by-user/{id}', [EventController::class, 'eventsCreatedByUser']); //admin
     Route::get('my-events', [EventController::class, 'myEvents']);
     Route::post('set-event', [EventController::class, 'store']);
@@ -31,6 +32,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get-registration/{id}', [RegistrationController::class, 'show']);
     Route::put('update-registration/{id}', [RegistrationController::class, 'update']);
     Route::delete('delete-registration/{id}', [RegistrationController::class, 'destroy']);
+
+    //Schedules
+    Route::get('get-schedules-by-event/{event}', [ScheduleController::class, 'index']);
+    Route::post('set-schedule', [ScheduleController::class, 'store']);
+    Route::put('update-schedule/{id}', [ScheduleController::class, 'update']);
+    Route::delete('delete-schedule/{id}', [ScheduleController::class, 'destroy']);
 });
 
 

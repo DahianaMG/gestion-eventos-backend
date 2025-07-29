@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained()->onDelete('cascade');
             $table->string('activity_name', 100);
-            $table->dateTime('start_time');
-            $table->dateTime('end_time');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->string('location_description', 150);
             $table->timestamps();
             $table->softDeletes();
