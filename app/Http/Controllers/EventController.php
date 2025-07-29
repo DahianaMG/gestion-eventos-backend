@@ -85,9 +85,9 @@ class EventController extends Controller
     public function update(EventRequest $request, int $id)
     {
         $event = Event::find($id);
-        $userId = auth()->id();
+        $user = auth()->user();
 
-        if ($event->user_id !== $userId) {
+        if ($event->user_id !== $user->id && $user->role !== 'admin') {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
@@ -99,6 +99,7 @@ class EventController extends Controller
             'has_fair',
             'capacity',
         ]));
+
         return response()->json([
             'message' => 'The event has been updated.',
             'event' => $event
@@ -111,9 +112,9 @@ class EventController extends Controller
     public function destroy(int $id)
     {
         $event = Event::find($id);
-        $userId = auth()->id();
+        $user = auth()->user();
 
-        if ($event->user_id !== $userId) {
+        if ($event->user_id !== $user->id && $user->role !== 'admin') {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 

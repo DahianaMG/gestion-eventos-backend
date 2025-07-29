@@ -93,9 +93,9 @@ class RegistrationController extends Controller
     public function update(RegistrationRequest $request, int $id)
     {
         $registration = Registration::find($id);
-        $userId = auth()->id();
+        $user = auth()->user();
 
-        if ($registration->user_id !== $userId) {
+        if ($registration->user_id !== $user->id && $user->role !== 'admin') {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
@@ -117,9 +117,9 @@ class RegistrationController extends Controller
     public function destroy(int $id)
     {
         $registration = Registration::find($id);
-        $userId = auth()->id();
+        $user = auth()->user();
 
-        if ($registration->user_id !== $userId) {
+        if ($registration->user_id !== $user->id && $user->role !== 'admin') {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 

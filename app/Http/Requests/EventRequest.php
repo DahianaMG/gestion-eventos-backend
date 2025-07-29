@@ -30,10 +30,13 @@ class EventRequest extends FormRequest
             'capacity'    => ['required', 'integer', 'min:1'],
         ];
 
-        // If the authenticated user is admin it requires user_id
-        //if (Auth::check() && Auth::user()->role === 'admin') {
-        //    $rules['user_id'] = ['required', 'exists:users,id'];
-        //}
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+        //For update requests, replace 'required' with 'sometimes' in the validation rules.
+            foreach ($rules as $field => &$ruleSet) {
+                array_unshift($ruleSet, 'sometimes');
+                $ruleSet = array_filter($ruleSet, fn($rule) => $rule !== 'required');
+            }
+        }
 
         return $rules;
     }
@@ -41,8 +44,6 @@ class EventRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required'     => 'The user ID is required.',
-            'user_id.exists'       => 'The selected user does not exist.',
             'title.required'       => 'The event title is required.',
             'title.max'            => 'The event title may not be greater than 150 characters.',
             'description.required' => 'The event description is required.',

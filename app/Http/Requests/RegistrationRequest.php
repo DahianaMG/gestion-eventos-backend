@@ -27,10 +27,18 @@ class RegistrationRequest extends FormRequest
             'status'        => ['required', 'string', 'max:20'],
         ];
 
-        // If the authenticated user is admin it requires user_id
-        //if (Auth::check() && Auth::user()->role === 'admin') {
-        //    $rules['user_id'] = ['required', 'exists:users,id'];
-        //}
+        //If the authenticated user is admin it requires user_id
+        if ($this->user()->role === 'admin') {
+            $rules['user_id'] = ['required', 'exists:users,id'];
+        }
+
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+        //For update requests, replace 'required' with 'sometimes' in the validation rules.
+            foreach ($rules as $field => &$ruleSet) {
+                array_unshift($ruleSet, 'sometimes');
+                $ruleSet = array_filter($ruleSet, fn($rule) => $rule !== 'required');
+            }
+        }
 
         return $rules;
     }
