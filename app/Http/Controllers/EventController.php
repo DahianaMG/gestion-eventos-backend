@@ -14,7 +14,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with('schedules')->get();
+        $events = Event::with('schedules', 'vendors')->get();
         return response()->json($events);
     }
 
@@ -119,6 +119,7 @@ class EventController extends Controller
         }
 
         $event->delete();
+
         return response()->json([
             'message' => 'The event has been deleted.'
         ]);

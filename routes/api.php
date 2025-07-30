@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\VendorController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\RegistrationController;
@@ -38,6 +39,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('set-schedule', [ScheduleController::class, 'store']);
     Route::put('update-schedule/{id}', [ScheduleController::class, 'update']);
     Route::delete('delete-schedule/{id}', [ScheduleController::class, 'destroy']);
+
+    //Vendors
+    Route::get('get-vendors-by-event/{event}', [VendorController::class, 'index']);
+    Route::post('set-vendor', [VendorController::class, 'store']);
+    Route::put('update-vendor/{id}', [VendorController::class, 'update']);
+    Route::delete('delete-vendor/{id}', [VendorController::class, 'destroy']);
 });
 
 
