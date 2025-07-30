@@ -14,7 +14,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with('schedules', 'vendors')->get();
+        $events = Event::select('title', 'date_time', 'location', 'has_fair')->get();;
         return response()->json($events);
     }
 
@@ -67,8 +67,37 @@ class EventController extends Controller
      */
     public function show(int $id)
     {
-        $event = Event::with('schedules')->find($id);
-        return response()->json($event);
+        $event = Event::with(['schedules', 'vendors'])->find($id);
+
+        if (!$event) {
+            return response()->json(['message' => 'Evento no encontrado'], 404);
+        }
+
+        $schedules = $event->schedules->map(function ($schedule) {
+            return [
+                'activity_name' => $schedule->activity_name,
+                'start_time' => $schedule->start_time,
+                'end_time' => $schedule->end_time,
+            ];
+        });
+
+        $vendors = $event->vendors->map(function ($vendor) {
+            return [
+                'stand_name' => $vendor->stand_name,
+                'stand_description' => $vendor->stand_description,
+            ];
+        });
+
+        return response()->json([
+            'title' => $event->title,
+            'description' => $event->description,
+            'date_time' => $event->date_time,
+            'location' => $event->location,
+            'has_fair' => $event->has_fair,
+            'capacity' => $event->capacity,
+            'schedules' => $schedules,
+            'vendors' => $vendors,
+        ]);
     }
 
     /**
