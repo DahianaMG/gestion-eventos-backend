@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use App\Http\Requests\ScheduleRequest;
 
 class ScheduleController extends Controller
 {
@@ -13,7 +14,8 @@ class ScheduleController extends Controller
      */
     public function index($eventId)
     {
-        return Schedule::where('event_id', $eventId)->get();
+        $schedules = Schedule::where('event_id', $eventId)->get();
+        return response()->json($schedules);
     }
 
     /**
@@ -106,6 +108,7 @@ class ScheduleController extends Controller
         }
 
         $schedule->delete();
+
         return response()->json([
             'message' => 'The schedule has been deleted.'
         ]);

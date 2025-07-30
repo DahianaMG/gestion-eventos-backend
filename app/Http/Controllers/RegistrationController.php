@@ -55,13 +55,20 @@ class RegistrationController extends Controller
      */
     public function store(RegistrationRequest $request)
     {
-        $userId = auth()->id();
+        if (auth()->user()->role === 'admin') {
+            $userId = $request->user_id;
+            $status = $request->status;
+        } else {
+            $userId = auth()->id();
+            $status = "Pending";
+
+        }
 
         $registration = Registration::firstOrCreate([
             'user_id' => $userId,
             'event_id' => $request->event_id,
             'role_in_event' => $request->role_in_event,
-            'status' => $request->status
+            'status' => $status
         ]);
 
         return response()->json([
@@ -99,10 +106,14 @@ class RegistrationController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
+        if ($user->role === 'admin') {
+            $registration->user_id = $request->user_id;
+            $registration->event_id = $request->event_id;
+            $registration->status = $request->status;
+        }
+
         $registration->update($request->only([
-            'event_id',
             'role_in_event',
-            'status'
         ]));
 
         return response()->json([
@@ -124,6 +135,7 @@ class RegistrationController extends Controller
         }
 
         $registration->delete();
+
         return response()->json([
             'message' => 'Event registration canceled successfully.'
         ]);

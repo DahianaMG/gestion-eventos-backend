@@ -22,14 +22,14 @@ class RegistrationRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'event_id'      => ['required', 'exists:events,id'],
+            'event_id'      => ['required', 'integer', 'exists:events,id'],
             'role_in_event' => ['required', 'string', 'max:20'],
-            'status'        => ['required', 'string', 'max:20'],
         ];
 
         //If the authenticated user is admin it requires user_id
         if ($this->user()->role === 'admin') {
-            $rules['user_id'] = ['required', 'exists:users,id'];
+            $rules['user_id'] = ['required', 'integer', 'exists:users,id'];
+            $rules['status']  = ['required', 'string', 'max:20'];
         }
 
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
@@ -47,8 +47,10 @@ class RegistrationRequest extends FormRequest
     {
         return [
             'user_id.required'       => 'The user ID is required.',
+            'user_id.integer'        => 'The user ID must be a valid number.',
             'user_id.exists'         => 'The selected user does not exist.',
             'event_id.required'      => 'The event ID is required.',
+            'event_id.integer'       => 'The event ID must be a valid number.',
             'event_id.exists'        => 'The selected event does not exist.',
             'role_in_event.required' => 'The role in the event is required.',
             'role_in_event.string'   => 'The role must be a string.',
