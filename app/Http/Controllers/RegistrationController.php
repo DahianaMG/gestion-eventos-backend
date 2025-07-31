@@ -34,7 +34,12 @@ class RegistrationController extends Controller
 
     public function registrationsByEvent(int $eventId)
     {
+        $user = auth()->user();
         $event = Event::with('registrations.user')->find($eventId);
+
+        if ($event->user_id !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
 
         return response()->json([
             'event' => $event->title,
@@ -101,20 +106,26 @@ class RegistrationController extends Controller
     {
         $registration = Registration::find($id);
         $user = auth()->user();
+        $event = Event::find($registration->event_id);
 
-        if ($registration->user_id !== $user->id && $user->role !== 'admin') {
+        if ($registration->user_id !== $user->id && $event->user_id !== $user->id && $user->role !== 'admin') {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
         if ($user->role === 'admin') {
-            $registration->user_id = $request->user_id;
-            $registration->event_id = $request->event_id;
-            $registration->status = $request->status;
+            $registration->update($request->only([
+                'user_id',
+                'event_id',
+                'status',
+                'role_in_event'
+            ]));
         }
-
-        $registration->update($request->only([
-            'role_in_event',
-        ]));
+        elseif ($event->user_id === $user->id) {
+            $registration->update($request->only(['status']));
+        }
+        else {
+            $registration->update($request->only(['role_in_event']));
+        }
 
         return response()->json([
             'message' => 'The event registration has been updated.',

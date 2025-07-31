@@ -21,16 +21,23 @@ class VendorRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
-            'stand_name'        => ['required', 'string', 'max:100'],
-            'stand_description' => ['required', 'string'],
-            'stand_location'    => ['required', 'string', 'max:100'],
-        ];
+        $eventId = $this->input('event_id');
+        $event = \App\Models\Event::find($eventId);
 
-        //If the authenticated user is admin it requires user_id
-        if ($this->user()->role === 'admin') {
-            $rules['user_id']  = ['required', 'integer', 'exists:users,id'];
-            $rules['event_id'] = ['required', 'integer', 'exists:events,id'];
+        //If the authenticated user is organizer or admin it requires user_id, event_id and location
+        if ($this->user()->role === 'admin' || $event->user_id === $this->user()->id) {
+            $rules = [
+                'user_id'           => ['required', 'integer', 'exists:users,id'],
+                'event_id'          => ['required', 'integer', 'exists:events,id'],
+                'stand_name'        => ['required', 'string', 'max:100'],
+                'stand_description' => ['required', 'string'],
+                'stand_location'    => ['required', 'string', 'max:100'],
+            ];
+        } else {
+            $rules = [
+                'stand_name'        => ['required', 'string', 'max:100'],
+                'stand_description' => ['required', 'string'],
+        ];
         }
 
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {

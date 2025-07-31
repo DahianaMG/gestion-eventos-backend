@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Http\Requests\VendorRequest;
@@ -30,20 +31,19 @@ class VendorController extends Controller
      */
     public function store(VendorRequest $request)
     {
-        if (auth()->user()->role === 'admin') {
-            $userId = $request->user_id;
-            $standLocation = $request->stand_location;
-        } else {
-            $userId = auth()->id();
-            $standLocation = "To assign";
+        $user = auth()->user();
+        $event = Event::find($request->event_id);
+
+        if ($event->user_id !== $user->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'Forbidden'], 403);
         }
 
         $vendor = Vendor::firstOrCreate([
-            'user_id'          => $userId,
+            'user_id'          => $request->user_id,
             'event_id'         => $request->event_id,
             'stand_name'       => $request->stand_name,
             'stand_description'=> $request->stand_description,
-            'stand_location'   => $standLocation,
+            'stand_location'   => $request->stand_location,
         ]);
 
         return response()->json([
@@ -75,12 +75,13 @@ class VendorController extends Controller
     {
         $vendor = Vendor::find($id);
         $user = auth()->user();
+        $event = Event::find($vendor->event_id);
 
-        if ($vendor->user_id !== $user->id && $user->role !== 'admin') {
+        if ($vendor->user_id !== $user->id && $event->user_id !== $user->id && $user->role !== 'admin') {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        if ($user->role === 'admin') {
+        if ($event->user_id === $user->id || $user->role === 'admin') {
             $vendor->user_id = $request->user_id;
             $vendor->event_id = $request->event_id;
             $vendor->stand_location = $request->stand_location;
@@ -104,8 +105,9 @@ class VendorController extends Controller
     {
         $vendor = Vendor::find($id);
         $user = auth()->user();
+        $event = Event::find($request->event_id);
 
-        if ($vendor->user_id !== $user->id && $user->role !== 'admin') {
+        if ($vendor->user_id !== $user->id && $event->user_id !== $user->id && $user->role !== 'admin') {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
