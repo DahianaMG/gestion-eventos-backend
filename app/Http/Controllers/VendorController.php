@@ -81,16 +81,20 @@ class VendorController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
-        if ($event->user_id === $user->id || $user->role === 'admin') {
-            $vendor->user_id = $request->user_id;
-            $vendor->event_id = $request->event_id;
-            $vendor->stand_location = $request->stand_location;
+        if ($user->role === 'admin' || $event->user_id === $user->id) {
+            $vendor->update($request->only([
+                'user_id',
+                'event_id',
+                'stand_location',
+                'stand_name',
+                'stand_description'
+            ]));
+        } else {
+            $vendor->update($request->only([
+                'stand_name',
+                'stand_description'
+            ]));
         }
-
-        $vendor->update($request->only([
-            'stand_name',
-            'stand_description',
-        ]));
 
         return response()->json([
             'message' => 'The stand has been updated.',

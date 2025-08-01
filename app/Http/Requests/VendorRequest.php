@@ -21,6 +21,16 @@ class VendorRequest extends FormRequest
      */
     public function rules(): array
     {
+        if (!$this->has('event_id') && $this->route('id')) {
+        $vendor = \App\Models\Vendor::find($this->route('id'));
+
+            if ($vendor) {
+                //This injects the event_id into the request so it can be used during validation.
+                $this->merge([
+                    'event_id' => $vendor->event_id,
+                ]);
+            }
+        }
         $eventId = $this->input('event_id');
         $event = \App\Models\Event::find($eventId);
 
