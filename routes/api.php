@@ -54,6 +54,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('get-activity-participants-by-activity/{id}', [ActivityParticipantController::class, 'show']);
     Route::put('update-activity-participant/{id}', [ActivityParticipantController::class, 'update']);
     Route::delete('delete-activity-participant/{id}', [ActivityParticipantController::class, 'destroy']);
+
+    //Votes
+    Route::post('set-vote', [VoteController::class, 'store']);
+    Route::get('get-votes-results', [VoteController::class, 'results']);
 });
 
 //->Admin routes
