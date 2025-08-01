@@ -7,6 +7,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\ActivityParticipantController;
 
 //->Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -46,6 +47,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('set-vendor', [VendorController::class, 'store']); //organizer
     Route::put('update-vendor/{id}', [VendorController::class, 'update']);
     Route::delete('delete-vendor/{id}', [VendorController::class, 'destroy']);
+
+    //Activity participants
+    Route::get('get-activity-participants', [ActivityParticipantController::class, 'index']);
+    Route::post('set-activity-participant', [ActivityParticipantController::class, 'store']);
+    Route::get('get-activity-participants-by-activity/{id}', [ActivityParticipantController::class, 'show']);
+    Route::put('update-activity-participant/{id}', [ActivityParticipantController::class, 'update']);
+    Route::delete('delete-activity-participant/{id}', [ActivityParticipantController::class, 'destroy']);
 });
 
 //->Admin routes
