@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Event;
+use App\Models\Vendor;
 use Illuminate\Foundation\Http\FormRequest;
 
 class VendorRequest extends FormRequest
@@ -19,23 +21,22 @@ class VendorRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    protected function prepareForValidation()
     {
         if (!$this->has('event_id') && $this->route('id')) {
-        $vendor = \App\Models\Vendor::find($this->route('id'));
-
+            $vendor = Vendor::find($this->route('id'));
             if ($vendor) {
-                //This injects the event_id into the request so it can be used during validation.
-                $this->merge([
-                    'event_id' => $vendor->event_id,
-                ]);
+                $this->merge(['event_id' => $vendor->event_id]);
             }
         }
-        $eventId = $this->input('event_id');
-        $event = \App\Models\Event::find($eventId);
+    }
 
-        //If the authenticated user is organizer or admin it requires user_id, event_id and location
-        if ($this->user()->role === 'admin' || $event->user_id === $this->user()->id) {
+    public function rules(): array
+    {
+        $eventId = $this->input('event_id');
+        $event = Event::find($eventId);
+
+        if ($this->user()->role === 'admin' || ($event && $event->user_id === $this->user()->id)) {
             $rules = [
                 'user_id'           => ['required', 'integer', 'exists:users,id'],
                 'event_id'          => ['required', 'integer', 'exists:events,id'],
@@ -47,9 +48,10 @@ class VendorRequest extends FormRequest
             $rules = [
                 'stand_name'        => ['required', 'string', 'max:100'],
                 'stand_description' => ['required', 'string'],
-        ];
+            ];
         }
 
+        //For update requests, replace 'required' with 'sometimes' in the validation rules.
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             foreach ($rules as $field => &$ruleSet) {
                 array_unshift($ruleSet, 'sometimes');
@@ -68,7 +70,6 @@ class VendorRequest extends FormRequest
             'event_id.required'          => 'The event ID is required.',
             'event_id.integer'           => 'The event ID must be a valid number.',
             'user_id.exists'             => 'The selected user does not exist.',
-            'event_id.integer'           => 'The event ID must be a valid number.',
             'event_id.exists'            => 'The selected event does not exist.',
             'stand_name.required'        => 'The stand name is required.',
             'stand_name.max'             => 'The stand name may not be greater than 100 characters.',

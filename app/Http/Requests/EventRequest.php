@@ -30,8 +30,8 @@ class EventRequest extends FormRequest
             'capacity'    => ['required', 'integer', 'min:1'],
         ];
 
-        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
         //For update requests, replace 'required' with 'sometimes' in the validation rules.
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             foreach ($rules as $field => &$ruleSet) {
                 array_unshift($ruleSet, 'sometimes');
                 $ruleSet = array_filter($ruleSet, fn($rule) => $rule !== 'required');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ActivityParticipant;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ActivityParticipantRequest extends FormRequest
@@ -28,7 +29,7 @@ class ActivityParticipantRequest extends FormRequest
         $user = $this->user();
 
         $participantId = $this->route('id'); //Get the participant ID from the route
-        $participant = \App\Models\ActivityParticipant::find($participantId);
+        $participant = ActivityParticipant::find($participantId);
         $schedule = $participant->schedule;
 
         //determines whether the authenticated user is the event organizer
@@ -40,7 +41,7 @@ class ActivityParticipantRequest extends FormRequest
             $rules['schedule_id'] = ['required', 'integer', 'exists:schedules,id'];
         }
 
-        //For update requests, use 'sometimes' instead of 'required'
+        //For update requests, replace 'required' with 'sometimes' in the validation rules.
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             foreach ($rules as $field => &$ruleSet) {
                 array_unshift($ruleSet, 'sometimes');

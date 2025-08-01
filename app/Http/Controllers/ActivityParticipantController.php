@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use App\Models\ActivityParticipant;
+use App\Http\Requests\ActivityParticipantRequest;
 
 class ActivityParticipantController extends Controller
 {
