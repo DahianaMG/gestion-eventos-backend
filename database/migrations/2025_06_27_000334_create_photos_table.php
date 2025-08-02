@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('photo_url');
             $table->text('description')->nullable();
             $table->dateTime('uploaded_at');
+            $table->json('tags')->nullable();
             $table->softDeletes();
         });
     }

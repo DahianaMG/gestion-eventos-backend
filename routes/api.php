@@ -58,6 +58,11 @@ Route::middleware('auth:sanctum')->group(function () {
     //Votes
     Route::post('set-vote', [VoteController::class, 'store']);
     Route::get('get-votes-results', [VoteController::class, 'results']);
+
+    //Photos
+    Route::get('get-photos', [PhotoController::class, 'index']);
+    Route::post('set-photo', [PhotoController::class, 'store']);
+    Route::delete('delete-photo/{id}', [PhotoController::class, 'destroy']);
 });
 
 //->Admin routes

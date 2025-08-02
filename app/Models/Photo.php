@@ -17,10 +17,12 @@ class Photo extends Model
         'photo_url',
         'description',
         'uploaded_at',
+        'tags',
     ];
 
     protected $casts = [
         'uploaded_at' => 'datetime',
+        'tags' => 'array',
     ];
 
     public function user()
