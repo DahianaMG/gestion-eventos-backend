@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\API\AuthController;
@@ -67,6 +68,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //->Admin routes
 Route::middleware('auth:sanctum', 'role:admin')->group(function () {
+    //Users
+    Route::get('get-users', [UserController::class, 'index']);
+
     //Events
     Route::get('events-by-user/{id}', [EventController::class, 'eventsCreatedByUser']);
 
