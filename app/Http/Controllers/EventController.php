@@ -14,7 +14,7 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::select('title', 'date_time', 'location', 'has_fair')->get();;
+        $events = Event::all();;
         return response()->json($events);
     }
 
