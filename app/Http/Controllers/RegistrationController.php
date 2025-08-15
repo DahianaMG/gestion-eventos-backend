@@ -65,7 +65,7 @@ class RegistrationController extends Controller
             $status = $request->status;
         } else {
             $userId = auth()->id();
-            $status = "Pending";
+            $status = "pending";
 
         }
 
@@ -87,8 +87,27 @@ class RegistrationController extends Controller
      */
     public function show(int $id)
     {
-        $registration = Registration::find($id);
-        return response()->json($registration);
+        $registration = Registration::with(['user', 'event'])->find($id);
+
+        if (!$registration) {
+            return response()->json(['message' => 'Inscripción no encontrada'], 404);
+        }
+
+        return response()->json([
+            'id' => $registration->id,
+            'role_in_event' => $registration->role_in_event,
+            'status' => $registration->status,
+            'created_at' => $registration->created_at,
+            'user' => [
+                'id' => $registration->user->id,
+                'name' => $registration->user->name,
+            ],
+            'event' => [
+                'id' => $registration->event->id,
+                'organizer_id' => $registration->event->user_id,
+                'title' => $registration->event->title,
+            ]
+        ]);
     }
 
     /**

@@ -55,7 +55,10 @@ class User extends Authenticatable
     }
     public function attendingEvents()
     {
-        return $this->belongsToMany(Event::class, 'registrations', 'user_id', 'event_id');
+        return $this->belongsToMany(Event::class, 'registrations', 'user_id', 'event_id')
+                ->wherePivotNull('deleted_at')
+                ->withPivot(['id', 'role_in_event', 'status', 'created_at'])
+                ->withTimestamps();
     }
     public function registrations()
     {

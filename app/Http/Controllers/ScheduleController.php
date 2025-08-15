@@ -14,7 +14,9 @@ class ScheduleController extends Controller
      */
     public function index($eventId)
     {
-        $schedules = Schedule::where('event_id', $eventId)->get();
+        $schedules = Schedule::where('event_id', $eventId)
+        ->orderBy('start_time', 'asc')
+        ->get();
         return response()->json($schedules);
     }
 
@@ -55,9 +57,9 @@ class ScheduleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Schedule $schedule)
+    public function show(int $id)
     {
-        //
+        return Schedule::find($id);
     }
 
     /**

@@ -70,7 +70,7 @@ class EventController extends Controller
         $event = Event::with(['schedules', 'vendors'])->find($id);
 
         if (!$event) {
-            return response()->json(['message' => 'Evento no encontrado'], 404);
+            return response()->json(['message' => 'Event not found.'], 404);
         }
 
         $schedules = $event->schedules->map(function ($schedule) {
@@ -89,6 +89,7 @@ class EventController extends Controller
         });
 
         return response()->json([
+            'user_id' => $event->user_id,
             'title' => $event->title,
             'description' => $event->description,
             'date_time' => $event->date_time,

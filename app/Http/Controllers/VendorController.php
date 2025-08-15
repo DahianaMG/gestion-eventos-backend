@@ -55,9 +55,9 @@ class VendorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Vendor $vendor)
+    public function show(int $id)
     {
-        //
+        return Vendor::find($id);
     }
 
     /**

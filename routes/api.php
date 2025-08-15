@@ -39,12 +39,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Schedules
     Route::get('get-schedules-by-event/{event}', [ScheduleController::class, 'index']);
+    Route::get('get-schedule/{id}', [ScheduleController::class, 'show']);
     Route::post('set-schedule', [ScheduleController::class, 'store']);  //organizer
     Route::put('update-schedule/{id}', [ScheduleController::class, 'update']);  //organizer
     Route::delete('delete-schedule/{id}', [ScheduleController::class, 'destroy']);  //organizer
 
     //Vendors
     Route::get('get-vendors-by-event/{event}', [VendorController::class, 'index']);
+    Route::get('get-vendor/{id}', [VendorController::class, 'show']);
     Route::post('set-vendor', [VendorController::class, 'store']); //organizer
     Route::put('update-vendor/{id}', [VendorController::class, 'update']);
     Route::delete('delete-vendor/{id}', [VendorController::class, 'destroy']);
@@ -70,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum', 'role:admin')->group(function () {
     //Users
     Route::get('get-users', [UserController::class, 'index']);
+    Route::get('get-user/{id}', [UserController::class, 'show']);
 
     //Events
     Route::get('events-by-user/{id}', [EventController::class, 'eventsCreatedByUser']);
